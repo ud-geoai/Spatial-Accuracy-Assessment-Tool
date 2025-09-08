@@ -114,58 +114,36 @@ library(dplyr)
 # --- LOAD RASTERS FOR RF ---
 
 # Original image
-o_rf <- rast("rf.tif")   
+o_rf <- rast("o_rf.tif")   
 
 # Experiments
-ext1_rf <- rast("ext1_rf.tif")
-ext2_rf <- rast("ext2_rf.tif")
-ext_12_rf <- rast("ext12_rf.tif")
-aug1_rf <- rast("aug1_rf.tif")
-
-
-# --- LOAD RASTERS FOR MARS ---
-
-# Original image
-o_mars <- rast("mars.tif")
-
-# Experiments
-ext1_mars <- rast("ext1_mars.tif")
-ext2_mars <- rast("ext2_mars.tif")
-ext_12_mars <- rast("ext12_mars.tif")
-aug1_mars <- rast("aug1_mars.tif")
+exp1_rf <- rast("exp1_rf.tif")
+exp2_rf <- rast("exp2_rf.tif")
 
 
 # --- LOAD RASTERS FOR SVM ---
 
 # Original image
-o_svm <- rast("svm.tif")
+o_svm <- rast("o_svm.tif")
 
 # Experiments
-ext1_svm <- rast("ext1_svm.tif")
-ext2_svm <- rast("ext2_svm.tif")
-ext_12_svm <- rast("ext12_svm.tif")
-aug1_svm <- rast("aug1_svm.tif")
+exp1_svm <- rast("exp1_svm.tif")
+exp2_svm <- rast("exp2_svm.tif")
 
 #Load reference vector
 ref <- vect("reference.shp")
 
-raster <- c(o_rf, o_mars, o_svm, ext1_rf,
-            ext1_mars, ext1_svm,
-            ext2_rf, ext2_mars, ext2_svm,
-            ext_12_rf, ext_12_mars, ext_12_svm,
-            aug1_rf, aug1_mars, aug1_svm)
+raster <- c(o_rf, o_svm, exp1_rf,exp1_svm,
+            exp2_rf, exp2_svm)
 
 
 # Name loaded rasters
-names(raster) <- c("o_rf", "o_mars", "o_svm", "ext1_rf",
-                    "ext1_mars", "ext1_svm",
-                   "ext2_rf", "ext2_mars", "ext2_svm",
-                   "ext_12_rf", "ext_12_mars", "ext_12_svm",
-                   "aug1_rf", "aug1_mars", "aug1_svm")
+names(raster) <- c("o_rf", "o_svm", "exp1_rf",
+                   "exp1_svm", "exp2_rf", "exp2_svm")
 
 
 # Run the tool
-results <- plot_classifications(
+results <- spatial_accuracy(
   input_raster = raster,
   target_class = "ASM",
   other_class = "Non.ASM",
@@ -185,7 +163,7 @@ print(results$metrics)
 
 # Save the figure
 ggsave(
-  filename = "acc_area.jpg",
+  filename = "result_spatial_accuracy.jpg",
   plot = results$plot,   
   width = 8,             
   height = 12,           
