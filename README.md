@@ -1,3 +1,10 @@
+## Citation
+
+If you use this tool, please cite:
+
+*Manuscript under review.*
+*[Link will be added upon publication]*
+
 # Spatial Accuracy Assessment Tool
 
 This R script provides functions for spatially explicit accuracy assessment of categorical classification rasters. It computes user’s accuracy (UA), producer’s accuracy (PA), F1-score, and area-based summaries for a target class, and produces publication-ready facet maps. The tool is designed for geospatial analysis with the terra package.
