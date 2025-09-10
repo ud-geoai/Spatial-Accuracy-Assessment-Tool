@@ -4,7 +4,7 @@ library(ggplot2)
 library(tidyr)
 library(sf)
 
-plot_classifications <- function(input_raster, 
+spatial_accuracy <- function(input_raster, 
                                      polygons, 
                                      target_class = "class_a",
                                      other_class = "class_b",
