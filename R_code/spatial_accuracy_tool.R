@@ -5,18 +5,18 @@ library(tidyr)
 library(sf)
 
 spatial_accuracy <- function(input_raster, 
-                                     polygons, 
-                                     target_class = "class_a",
-                                     other_class = "class_b",
-                                     label_type = c("accuracy", "scr", "both"),
-                                     show_polygons = TRUE,
-                                     polygon_color = "black",
-                                     polygon_fill = "transparent",
-                                     polygon_size = 0.5,
-                                     polygon_alpha = 0.7,
-                                     ncol_facet = 3, 
-                                     strip_text_size = 7
-                                     ) {
+                             polygons, 
+                             target_class = "class_a",
+                             other_class = "class_b",
+                             label_type = c("accuracy", "scr", "both"),
+                             show_polygons = TRUE,
+                             polygon_color = "black",
+                             polygon_fill = "transparent",
+                             polygon_size = 0.5,
+                             polygon_alpha = 0.7,
+                             ncol_facet = 3, 
+                             strip_text_size = 7
+) {
   
   if (!inherits(input_raster, "SpatRaster")) {
     stop("The input raster must be a SpatRaster object")
@@ -34,13 +34,8 @@ spatial_accuracy <- function(input_raster,
     }
     if (!is.factor(raster_layer)) stop("Raster must be categorical (factor).")
     
-    cat_levels <- cats(raster_layer)[[1]]
-    if (!target_class %in% cat_levels$class) {
-      stop(sprintf("Target class '%s' not found. Classes: %s",
-                   target_class, paste(unique(cat_levels$class), collapse = ", ")))
-    }
-    target_code <- cat_levels$value[cat_levels$class == target_class]
-    if (length(target_code) != 1) stop("Target class maps to multiple raster codes.")
+    target_code <- target_class
+    
     
     mask_inside  <- mask(raster_layer, polygons)
     mask_outside <- mask(raster_layer, polygons, inverse = TRUE)
@@ -60,15 +55,15 @@ spatial_accuracy <- function(input_raster,
     
     n_pixels_inside <- sum(values_inside == target_code, na.rm = TRUE)
     area_inside_m2 <- n_pixels_inside * pixel_area_m2
-
+    
     n_pixels_outside <- sum(values_outside == target_code, na.rm = TRUE)
     area_outside_m2 <- n_pixels_outside * pixel_area_m2
-
+    
     total_polygon_area_m2 <- sum(expanse(polygons, unit = "m"))
-
+    
     percentage_in_polygon <- ifelse(total_polygon_area_m2 > 0, 
-                                        (area_inside_m2 / total_polygon_area_m2) * 100, 
-                                        0)
+                                    (area_inside_m2 / total_polygon_area_m2) * 100, 
+                                    0)
     
     scr <- area_inside_m2/(area_inside_m2 + area_outside_m2)
     
@@ -101,7 +96,7 @@ spatial_accuracy <- function(input_raster,
         label_type == "accuracy" ~ sprintf("%s\nUA=%.1f%% | PA=%.1f%% | F1=%.1f%%",
                                            Layer, UA*100, PA*100, F1*100),
         label_type == "scr" ~ sprintf("%s\nSCR=%.2f",
-                                       Layer, SCR),
+                                      Layer, SCR),
         label_type == "both" ~ sprintf("%s\nF1=%.1f%% | SCR=%.2f",
                                        Layer, F1*100, SCR),
         TRUE ~ as.character(Layer)
@@ -205,15 +200,15 @@ calculate_area <- function(raster_layer, polygons, target_class) {
   
   n_pixels_inside <- sum(values_inside == target_code, na.rm = TRUE)
   area_inside_m2 <- n_pixels_inside * pixel_area_m2
-
+  
   n_pixels_outside <- sum(values_outside == target_code, na.rm = TRUE)
   area_outside_m2 <- n_pixels_outside * pixel_area_m2
-
+  
   total_polygon_area_m2 <- sum(expanse(polygons, unit = "m"))
-
+  
   percentage_in_polygon <- ifelse(total_polygon_area_m2 > 0, 
-                                      (area_inside_m2 / total_polygon_area_m2) * 100, 
-                                      0)
+                                  (area_inside_m2 / total_polygon_area_m2) * 100, 
+                                  0)
   
   scr <- area_inside_m2/(area_inside_m2 + area_outside_m2)
   
