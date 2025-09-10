@@ -110,6 +110,8 @@ A data.frame with the following columns:
 ```
 source("spatial_accuracy_tool.R")
 
+source("spatial_accuracy_tool.R")
+
 # Load the required libraries
 library(terra)
 library(ggplot2)
@@ -121,28 +123,27 @@ library(dplyr)
 # --- LOAD RASTERS FOR RF ---
 
 # Original image
-o_rf <- rast("o_rf.tif")   
+o_rf <- as.factor(rast("o_rf.tif"))   
 
 # Experiments
-exp1_rf <- rast("exp1_rf.tif")
-exp2_rf <- rast("exp2_rf.tif")
+exp1_rf <- as.factor(rast("exp1_rf.tif"))
+exp2_rf <- as.factor(rast("exp2_rf.tif"))
 
 
 # --- LOAD RASTERS FOR SVM ---
 
 # Original image
-o_svm <- rast("o_svm.tif")
+o_svm <- as.factor(rast("o_svm.tif"))
 
 # Experiments
-exp1_svm <- rast("exp1_svm.tif")
-exp2_svm <- rast("exp2_svm.tif")
+exp1_svm <- as.factor(rast("exp1_svm.tif"))
+exp2_svm <- as.factor(rast("exp2_svm.tif"))
 
 #Load reference vector
 ref <- vect("reference.shp")
 
 raster <- c(o_rf, o_svm, exp1_rf,exp1_svm,
             exp2_rf, exp2_svm)
-
 
 # Name loaded rasters
 names(raster) <- c("o_rf", "o_svm", "exp1_rf",
@@ -152,15 +153,15 @@ names(raster) <- c("o_rf", "o_svm", "exp1_rf",
 # Run the tool
 results <- spatial_accuracy(
   input_raster = raster,
-  target_class = "ASM",
-  other_class = "Non.ASM",
+  target_class = 1,
+  other_class = 2,
   polygons = ref,
   label_type = "scr"
 )
 
 
 # Compute area-based statistics
-calculate_area(raster_layer = o_rf,polygons = ref,target_class = "ASM")
+calculate_area(raster_layer = o_rf,polygons = ref,target_class = 1)
 
 
 # Print the results
@@ -172,8 +173,8 @@ print(results$metrics)
 ggsave(
   filename = "result_spatial_accuracy.jpg",
   plot = results$plot,   
-  width = 8,             
-  height = 12,           
+  width = 12,             
+  height = 8,           
   dpi = 300              
 )
 
